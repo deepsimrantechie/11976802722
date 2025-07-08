@@ -1,4 +1,4 @@
-// server.js
+
 import express from "express";
 import cors from "cors";
 import { Log } from "./middleware/logger.js";
