@@ -1,7 +1,7 @@
 // server.js
 import express from "express";
 import cors from "cors";
-import { Log } from "./middleware/logger.js"; // Make sure logger.js exists
+import { Log } from "./middleware/logger.js";
 
 const app = express();
 const PORT = 5000;
@@ -11,7 +11,6 @@ app.use(express.json());
 
 const db = new Map();
 
-// POST /shorturls - Create a short URL
 app.post("/shorturls", async (req, res) => {
   const { url, validity = 30, shortcode } = req.body;
   const code = shortcode || Math.random().toString(36).substring(2, 8);
@@ -31,12 +30,11 @@ app.post("/shorturls", async (req, res) => {
 
   await Log("POST /shorturls", "info", "URL", `Short URL created: ${code}`);
   res.status(201).json({
-    shortLink: `http://localhost:5000/${code}`, // HTTP for local use
+    shortLink: `http://localhost:5000/${code}`,
     expiry,
   });
 });
 
-// GET /shorturls/:code - Get stats for a short URL
 app.get("/shorturls/:code", async (req, res) => {
   const { code } = req.params;
 
@@ -62,7 +60,6 @@ app.get("/shorturls/:code", async (req, res) => {
   });
 });
 
-// GET /:code - Redirect to the original long URL
 app.get("/:code", async (req, res) => {
   const { code } = req.params;
 
@@ -73,7 +70,6 @@ app.get("/:code", async (req, res) => {
 
   const data = db.get(code);
 
-  // Optional: Log the click
   data.clicks.push({
     timestamp: new Date().toISOString(),
     referrer: req.get("Referrer") || "Direct",
@@ -84,7 +80,7 @@ app.get("/:code", async (req, res) => {
   res.redirect(data.url);
 });
 
-// Start the server
+// start the serever
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
